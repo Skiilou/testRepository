@@ -1,0 +1,89 @@
+/*Création de la base de données*/
+DROP DATABASE IF EXISTS GAMER;
+CREATE DATABASE IF NOT EXISTS GAMER DEFAULT CHARSET=latin1 COLLATE=latin1_general_cs
+
+
+
+/*Création des tables avec des drop if exists*/
+DROP TABLE if EXISTS Joueur;
+CREATE TABLE Joueur(
+   id_joueur INT NOT NULL AUTO_INCREMENT,
+   Nom VARCHAR(50)NOT NULL,
+   Prenom VARCHAR(50)NOT NULL,
+   Date_naissance DATE NOT NULL,
+   Genre VARCHAR(50) NOT NULL,
+   PRIMARY KEY(id_joueur)
+)ENGINE = innoDB ;
+
+DROP TABLE if EXISTS Version_du_jeu;
+CREATE TABLE Version_du_jeu(
+   id_version INT NOT NULL AUTO_INCREMENT,
+   Nom_jeu VARCHAR(50) NOT NULL,
+   PRIMARY KEY(id_version)
+)ENGINE = innoDB ;
+
+DROP TABLE if EXISTS Score;
+CREATE TABLE Score(
+   Id_score INT NOT NULL AUTO_INCREMENT,
+   Valeur_score INT NOT NULL,
+   Date_score DATE NOT NULL,
+   id_version INT NOT NULL,
+   id_joueur INT NOT NULL,
+   PRIMARY KEY(Id_score),
+   FOREIGN KEY(id_joueur) REFERENCES Joueur(id_joueur),
+   FOREIGN KEY(id_version) REFERENCES Version_du_jeu(id_version)
+)ENGINE = innoDB ;
+
+
+/* Création des insertions*/
+
+
+INSERT INTO Joueur(id_joueur,Nom,Prenom,Date_naissance,Genre) VALUES
+(1,'Proust','Albert','1950-01-01','Homme'),
+(2,'Bouteille','Jacqueline','1968-02-02','Femme'),
+(3,'Tableau','Henri','2002-03-03','Homme'),
+(4,'Kali','kali','2000-04-04','Femme'),
+(5,'Lejeune','Tom','1999-05-05','Homme'),
+(6,'Baron','Loïc','1902-06-06','Homme'),
+(7,'Clavier','Christiane','1999-07-07','Femme'),
+(8,'Stylo','Aurore','1999-08-08','Femme');
+
+INSERT INTO Version_du_jeu(id_version,Nom_jeu) VALUES
+(1,'TOTALWAR:CHESS'),
+(2,'Chess classic'),
+(3,'Chess City');
+
+INSERT INTO Score(Id_score,Valeur_score,Date_score,id_version,id_joueur) VALUES
+(1,12,'2022-06-16',1,2),
+(2,15,'2022-06-02',3,2),
+(3,0,'2022-01-20',1,1),
+(4,148,'2022-03-01',2,3),
+(5,4012,'2022-02-16',2,4),
+(6,169,'2022-06-16',3,5),
+(7,111,'2022-02-16',2,8),
+(8,450,'2022-02-16',2,7),
+(9,3000,'2022-02-16',2,6);
+
+/*Requêtes disponibles:
+
+. Gestion de la suppression d’un joueur ayant joué :
+
+DELETE FROM joueur
+WHERE Nom="Proust"
+
+
+. Gestion de la suppression d’un jeu ayant été pratiqué :
+
+DELETE FROM version_du_jeu
+WHERE Nom_jeu="Chess City"
+
+Classement des jeux par ordre décroissant de nb de parties effectuées et par le genre 
+des joueurs
+
+SELECT Genre, COUNT(Id_score) as nbPartiesEffectues
+FROM score,joueur
+WHERE joueur.id_joueur=score.id_joueur
+GROUP BY Genre
+ORDER BY nbPartiesEffectues DESC
+
+ */
